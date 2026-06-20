@@ -27,5 +27,8 @@ Write a commit for the changes above following Conventional Commits
 - Show me the message and wait for confirmation before running `git commit`.
 - Once I reply `confirm`, `yes`, or `accept`, run `git commit` immediately —
   do not ask again or request further permission.
+- Run `git add` and `git commit` as separate Bash calls; never chain them with
+  `&&`. Each call then matches its own allowlist rule and avoids a permission
+  prompt.
 
 Apply any extra instructions from the user, if provided: $ARGUMENTS
