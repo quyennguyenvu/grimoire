@@ -22,6 +22,8 @@ Write a commit for the changes above following Conventional Commits
 - Infer `type` (feat/fix/refactor/chore/test/docs) and `scope` from the diff.
 - If nothing is staged, stage the relevant files first; don't stage unrelated noise.
 - Body: explain the _why_, not the _what_, when it isn't obvious.
+- Never add a `Co-Authored-By` trailer or any AI co-author attribution
+  (Claude, Anthropic, or any other AI) to the commit message.
 - Show me the message and wait for confirmation before running `git commit`.
 
 Apply any extra instructions from the user, if provided: $ARGUMENTS
