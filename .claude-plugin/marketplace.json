@@ -1,0 +1,13 @@
+{
+  "name": "grimoire",
+  "description": "Personal collection of opinionated Claude Code subagents, skills, and slash commands.",
+  "owner": {
+    "name": "quyennguyenvu"
+  },
+  "plugins": [
+    {
+      "name": "grimoire-core",
+      "source": "./plugins/grimoire-core"
+    }
+  ]
+}
