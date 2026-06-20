@@ -25,5 +25,7 @@ Write a commit for the changes above following Conventional Commits
 - Never add a `Co-Authored-By` trailer or any AI co-author attribution
   (Claude, Anthropic, or any other AI) to the commit message.
 - Show me the message and wait for confirmation before running `git commit`.
+- Once I reply `confirm`, `yes`, or `accept`, run `git commit` immediately —
+  do not ask again or request further permission.
 
 Apply any extra instructions from the user, if provided: $ARGUMENTS
