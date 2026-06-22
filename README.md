@@ -6,8 +6,8 @@ focused, opinionated personas for code review, research, writing, financial
 modeling, presentations, senior-engineer pair programming, and Conventional
 Commits.
 
-Everything ships as a single plugin, **`grimoire-core`**, installed from a
-**local path** — no remote, no GitHub auth, nothing leaves your machine.
+Everything ships as a single plugin, **`grimoire-core`**, installable straight
+from GitHub — or from a local clone if you'd rather hack on it.
 
 > [!IMPORTANT]
 > **Invocation names are namespaced after install.** Slash commands are prefixed
@@ -35,35 +35,34 @@ The marketplace (`grimoire`) currently publishes one plugin, `grimoire-core`:
 
 - **Claude Code ≥ 2.1** (`claude --version`). Plugin marketplaces are supported
   in current releases.
-- The repo cloned somewhere on disk. It can live anywhere — the examples below
-  assume:
 
-  ```sh
-  # wherever you keep it; substitute your own path throughout
-  GRIMOIRE=~/workspace/gh_leo/grimoire
-  ```
-
-  All commands work equally with an absolute path or, when run from inside the
-  repo, with `.`.
-
-### 2. Register the marketplace (local path)
+### 2. Register the marketplace
 
 From a terminal:
 
 ```sh
-claude plugin marketplace add "$GRIMOIRE"
-# …or, from inside the repo:
-#   cd "$GRIMOIRE" && claude plugin marketplace add .
+claude plugin marketplace add quyennguyenvu/grimoire
 ```
 
 Or in an interactive Claude Code session:
 
 ```text
-/plugin marketplace add ~/workspace/gh_leo/grimoire
+/plugin marketplace add quyennguyenvu/grimoire
 ```
 
-This reads `.claude-plugin/marketplace.json` and registers a marketplace named
-**`grimoire`**. Because the source is a local path, nothing is fetched remotely.
+This clones the public repo, reads `.claude-plugin/marketplace.json`, and
+registers a marketplace named **`grimoire`**. You can also pass the full URL
+(`https://github.com/quyennguyenvu/grimoire`) if you prefer.
+
+> [!TIP]
+> **Working on the spells yourself?** Clone the repo and register it from the
+> local path instead — edits then take effect after a marketplace update (see
+> step 5):
+>
+> ```sh
+> git clone https://github.com/quyennguyenvu/grimoire.git
+> claude plugin marketplace add ./grimoire   # or an absolute path
+> ```
 
 ### 3. Install the plugin
 
@@ -90,13 +89,12 @@ does not run from your working tree.
 - The `senior-engineer` skill is available — ask for "senior-engineer mode" and
   Claude switches into the terse response style.
 
-### 5. Update after editing the repo
+### 5. Update to the latest version
 
-Because the plugin is copied at install time, edits to the repo only take effect
-after you refresh the marketplace:
+The plugin is copied into the cache at install time, so new changes only take
+effect after you refresh the marketplace. Pull the latest from GitHub with:
 
 ```sh
-cd "$GRIMOIRE" && git pull          # if you track changes remotely
 claude plugin marketplace update grimoire
 ```
 
@@ -106,6 +104,10 @@ Or in-session, then reload so non-skill components (commands/agents) re-read:
 /plugin marketplace update grimoire
 /reload-plugins
 ```
+
+> [!NOTE]
+> If you registered from a local clone, run `git pull` in it first — the
+> marketplace update copies from whatever the clone currently contains.
 
 ### 6. Uninstall
 
