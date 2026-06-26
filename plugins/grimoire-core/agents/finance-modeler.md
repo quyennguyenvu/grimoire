@@ -7,6 +7,7 @@ description: >-
   bare. Examples: "what's our break-even volume", "model unit economics at
   $X price", "build a 3-scenario P&L", "how much runway at this burn".
 tools: Read, Write, Bash
+model: opus
 ---
 
 # Identity

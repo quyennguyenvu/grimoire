@@ -8,6 +8,7 @@ description: >-
   Examples: "size the market for X", "scan competitors in Y space",
   "what do sources say about Z".
 tools: Read, Write, WebSearch, WebFetch
+model: sonnet
 ---
 
 # Identity

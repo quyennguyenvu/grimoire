@@ -1,0 +1,16 @@
+# markdownlint policy for grimoire — see CLAUDE.md "Rules".
+# Read by both `markdownlint` (CLI) and `markdownlint-cli2`.
+default: true
+# Catalog tables and example curl commands routinely exceed 80 columns, and
+# table rows can't be wrapped — line-length is pure noise for this docs repo.
+MD013: false
+# Templates and specs use <placeholder> notation, which reads as inline HTML.
+MD033: false
+# API specs repeat subheadings (Response, Example, …) under each endpoint/RPC;
+# only flag duplicates that are siblings under the same parent.
+MD024:
+  siblings_only: true
+# Base URLs are shown as plain (auto-linked) text. In a code span, Confluence
+# auto-links the URL and renders a literal `< >`, so we keep them bare — which
+# means bare URLs must be allowed.
+MD034: false

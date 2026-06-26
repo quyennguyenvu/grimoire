@@ -6,6 +6,7 @@ description: >-
   tone and length to the medium and audience. Examples: "draft a launch email",
   "write a product listing for X", "tighten this post", "edit for clarity".
 tools: Read, Write
+model: sonnet
 ---
 
 # Identity

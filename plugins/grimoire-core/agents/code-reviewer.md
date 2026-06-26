@@ -7,6 +7,9 @@ description: >-
   no edits. Examples: "review this Go package", "what's wrong with this diff",
   "audit error handling in X".
 tools: Read, Grep, Glob
+model: opus
+skills:
+  - senior-engineer
 ---
 
 # Identity

@@ -27,6 +27,8 @@ The marketplace (`grimoire`) currently publishes one plugin, `grimoire-core`:
 | `finance-modeler` | Agent | Cost models, unit economics, break-even, pricing scenarios, P&L. Auditable CSV/markdown with assumptions laid bare. | "use the `finance-modeler` for …" |
 | `presenter` | Agent | Turns source docs and data into slide decks and visual reports with charts. | "use the `presenter` to build a deck" |
 | `senior-engineer` | Skill | Hyper-concise pair-programming mode: direct answer → code → trade-offs. Zero fluff, exact terminology. | auto by intent, or ask for "senior-engineer mode" |
+| `api-spec-rest` | Skill | Drafts a standardized Markdown REST/HTTP API spec — one endpoint, or several sharing a domain/base URL/auth — with parameter and schema tables, examples, and a shared error model. | auto by intent, or ask to "draft a REST API spec" |
+| `api-spec-grpc` | Skill | Drafts a standardized Markdown gRPC API spec — one RPC, or several sharing a proto package/server/auth — with proto messages, streaming type, `grpcurl` examples, and the gRPC status-code error model. | auto by intent, or ask to "draft a gRPC API spec" |
 | `commit` | Command | Stages changes and writes a Conventional Commits message from the diff. | **`/grimoire-core:commit`** |
 
 ## Setup
@@ -173,6 +175,19 @@ grimoire/
 │       ├── commands/
 │       │   └── commit.md
 │       └── skills/
+│           ├── api-spec-grpc/
+│           │   ├── SKILL.md
+│           │   ├── template.md
+│           │   └── examples/
+│           │       ├── single-rpc.md
+│           │       └── multiple-rpcs.md
+│           ├── api-spec-rest/
+│           │   ├── SKILL.md
+│           │   ├── template.md
+│           │   └── examples/
+│           │       ├── single-endpoint.md
+│           │       ├── multiple-endpoints.md
+│           │       └── public-api.md
 │           └── senior-engineer/
 │               └── SKILL.md
 ├── CLAUDE.md                        # authoring guidance for Claude Code
