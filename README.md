@@ -19,17 +19,20 @@ from GitHub — or from a local clone if you'd rather hack on it.
 
 The marketplace (`grimoire`) currently publishes one plugin, `grimoire-core`:
 
-| Component | Type | What it does | Invoke as |
-| --- | --- | --- | --- |
-| `code-reviewer` | Agent | Read-only code review (Go-fluent) — correctness, error handling, concurrency, security, idioms. Returns prioritized findings, makes no edits. | delegated by description, or "use the `code-reviewer` agent" |
-| `researcher` | Agent | Web research, competitor scans, market sizing. Reads many sources, returns a distilled, cited summary. | "have the `researcher` size the market for X" |
-| `writer` | Agent | Drafts and edits clean, persuasive prose — docs, listings, posts, emails, landing copy. | "use the `writer` to draft …" |
-| `finance-modeler` | Agent | Cost models, unit economics, break-even, pricing scenarios, P&L. Auditable CSV/markdown with assumptions laid bare. | "use the `finance-modeler` for …" |
-| `presenter` | Agent | Turns source docs and data into slide decks and visual reports with charts. | "use the `presenter` to build a deck" |
-| `senior-engineer` | Skill | Hyper-concise pair-programming mode: direct answer → code → trade-offs. Zero fluff, exact terminology. | auto by intent, or ask for "senior-engineer mode" |
-| `api-spec-rest` | Skill | Drafts a standardized Markdown REST/HTTP API spec — one endpoint, or several sharing a domain/base URL/auth — with parameter and schema tables, examples, and a shared error model. | auto by intent, or ask to "draft a REST API spec" |
-| `api-spec-grpc` | Skill | Drafts a standardized Markdown gRPC API spec — one RPC, or several sharing a proto package/server/auth — with proto messages, streaming type, `grpcurl` examples, and the gRPC status-code error model. | auto by intent, or ask to "draft a gRPC API spec" |
-| `commit` | Command | Stages changes and writes a Conventional Commits message from the diff. | **`/grimoire-core:commit`** |
+| Component            | Type    | What it does                                                                                                                                                                                            | Invoke as                                                    |
+| -------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `code-reviewer`      | Agent   | Read-only code review (Go-fluent) — correctness, error handling, concurrency, security, idioms. Returns prioritized findings, makes no edits.                                                           | delegated by description, or "use the `code-reviewer` agent" |
+| `researcher`         | Agent   | Web research, competitor scans, market sizing. Reads many sources, returns a distilled, cited summary.                                                                                                  | "have the `researcher` size the market for X"                |
+| `writer`             | Agent   | Drafts and edits clean, persuasive prose — docs, listings, posts, emails, landing copy.                                                                                                                 | "use the `writer` to draft …"                                |
+| `finance-modeler`    | Agent   | Cost models, unit economics, break-even, pricing scenarios, P&L. Auditable CSV/markdown with assumptions laid bare.                                                                                     | "use the `finance-modeler` for …"                            |
+| `presenter`          | Agent   | Turns source docs and data into slide decks and visual reports with charts.                                                                                                                             | "use the `presenter` to build a deck"                        |
+| `software-architect` | Agent   | Designs a system or feature into a small architecture package — C4/sequence/ER diagrams, ADRs, and a linking design brief. Explores the code first, delegates formatting to its skills.                 | "use the `software-architect` to design X"                   |
+| `senior-engineer`    | Skill   | Hyper-concise pair-programming mode: direct answer → code → trade-offs. Zero fluff, exact terminology.                                                                                                  | auto by intent, or ask for "senior-engineer mode"            |
+| `api-spec-rest`      | Skill   | Drafts a standardized Markdown REST/HTTP API spec — one endpoint, or several sharing a domain/base URL/auth — with parameter and schema tables, examples, and a shared error model.                     | auto by intent, or ask to "draft a REST API spec"            |
+| `api-spec-grpc`      | Skill   | Drafts a standardized Markdown gRPC API spec — one RPC, or several sharing a proto package/server/auth — with proto messages, streaming type, `grpcurl` examples, and the gRPC status-code error model. | auto by intent, or ask to "draft a gRPC API spec"            |
+| `arch-diagram`       | Skill   | Emits architecture diagrams as code — picks the notation (C4, sequence, class, ER, state, flowchart, deployment, roadmap) and writes renderable Mermaid (default) or PlantUML (fallback).               | auto by intent, or ask to "draw a C4/sequence diagram"       |
+| `arch-decision`      | Skill   | Drafts an Architecture Decision Record or lightweight RFC — context, drivers, options with honest trade-offs, decision, and consequences — from a MADR-style template.                                  | auto by intent, or ask to "write an ADR for X"               |
+| `commit`             | Command | Stages changes and writes a Conventional Commits message from the diff.                                                                                                                                 | **`/grimoire-core:commit`**                                  |
 
 ## Setup
 
@@ -171,6 +174,7 @@ grimoire/
 │       │   ├── finance-modeler.md
 │       │   ├── presenter.md
 │       │   ├── researcher.md
+│       │   ├── software-architect.md
 │       │   └── writer.md
 │       ├── commands/
 │       │   └── commit.md
@@ -188,6 +192,20 @@ grimoire/
 │           │       ├── single-endpoint.md
 │           │       ├── multiple-endpoints.md
 │           │       └── public-api.md
+│           ├── arch-decision/
+│           │   ├── SKILL.md
+│           │   ├── template.md
+│           │   └── examples/
+│           │       ├── adr-accepted.md
+│           │       └── rfc-proposal.md
+│           ├── arch-diagram/
+│           │   ├── SKILL.md
+│           │   ├── reference.md
+│           │   └── examples/
+│           │       ├── c4-context.md
+│           │       ├── sequence.md
+│           │       ├── erd.md
+│           │       └── class-uml.md
 │           └── senior-engineer/
 │               └── SKILL.md
 ├── CLAUDE.md                        # authoring guidance for Claude Code
