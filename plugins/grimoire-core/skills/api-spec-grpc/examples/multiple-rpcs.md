@@ -1,10 +1,10 @@
-# Order Service
+# Order Service <!-- omit from toc -->
 
 **Owner:** Payments team
 
 Create and manage customer orders over gRPC. Every RPC shares the proto package, servers, authentication, and status-code model below.
 
-## Contents
+## Contents <!-- omit from toc -->
 
 - [How to read this doc](#how-to-read-this-doc)
 - [Basics](#basics)

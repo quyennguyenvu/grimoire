@@ -108,7 +108,15 @@ implement a client or server against without guessing.
   items under Basics and RPCs. Don't list the document title, the Contents
   section itself, or `####` RPC internals. Every link must point to a real
   heading slug (lowercase, spaces → hyphens, punctuation dropped), so name
-  sections plainly (`### CreateOrder`).
+  sections plainly (`### CreateOrder`). Append a trailing `<!-- omit from toc -->`
+  to the document title and the `## Contents` heading so editor TOC generators
+  (e.g. the Markdown All in One VS Code extension) regenerate this exact
+  two-level list instead of re-adding the title and Contents to it; the comment
+  is invisible in rendered GitHub/Confluence output.
+- **Escape pipes in tables.** A literal `|` inside a table cell splits the cell
+  and breaks the whole row, so write a nullable or union type with an escaped
+  pipe: `string \| null`, `Status (enum) \| null`. Never leave the union pipe
+  unescaped in a cell.
 - **Markdownlint-clean.** Blank lines around headings, lists, tables, and fenced
   blocks; a language on every fence (`protobuf`, `json`, `bash`, `text`); single
   trailing newline; no trailing spaces.

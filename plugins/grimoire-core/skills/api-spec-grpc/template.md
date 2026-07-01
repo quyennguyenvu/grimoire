@@ -1,10 +1,10 @@
-# <Service or Service Group Name>
+# <Service or Service Group Name> <!-- omit from toc -->
 
 **Owner:** <team or person>
 
 <One paragraph: what this service does, who calls it, and the problem it solves.>
 
-## Contents
+## Contents <!-- omit from toc -->
 
 - [How to read this doc](#how-to-read-this-doc)
 - [Basics](#basics)

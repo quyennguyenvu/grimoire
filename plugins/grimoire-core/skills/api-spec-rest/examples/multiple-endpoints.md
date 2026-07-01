@@ -1,10 +1,10 @@
-# Orders API
+# Orders API <!-- omit from toc -->
 
 **Owner:** Payments team
 
 Create and manage customer orders. Every endpoint shares the base URL, authentication, and error model below.
 
-## Contents
+## Contents <!-- omit from toc -->
 
 - [How to read this doc](#how-to-read-this-doc)
 - [Basics](#basics)
@@ -224,7 +224,7 @@ GET /orders
 | `data[].id`     | string          | Order ID.                        | `ord_123` |
 | `data[].status` | enum (`status`) | Lifecycle state.                 | `paid`    |
 | `total`         | integer         | Total matching orders.           | `1`       |
-| `next`          | string          | URL of the next page, or `null`. | `null`    |
+| `next`          | string \| null  | URL of the next page, or `null`. | `null`    |
 
 ```json
 {

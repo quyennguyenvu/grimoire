@@ -1,10 +1,10 @@
-# <API or API Group Name>
+# <API or API Group Name> <!-- omit from toc -->
 
 **Owner:** <team or person>
 
 <One paragraph: what this API does, who calls it, and the problem it solves.>
 
-## Contents
+## Contents <!-- omit from toc -->
 
 - [How to read this doc](#how-to-read-this-doc)
 - [Basics](#basics)

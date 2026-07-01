@@ -1,10 +1,10 @@
-# Exchange Rates API
+# Exchange Rates API <!-- omit from toc -->
 
 **Owner:** Data team
 
 Public foreign-exchange reference rates. Anyone can read the latest and historical rates — no account or credentials required.
 
-## Contents
+## Contents <!-- omit from toc -->
 
 - [How to read this doc](#how-to-read-this-doc)
 - [Basics](#basics)

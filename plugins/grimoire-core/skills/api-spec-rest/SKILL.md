@@ -71,7 +71,11 @@ guessing.
 - **Optional shared sections.** If every response is wrapped, document the
   envelope once in `### Response format` and have endpoint responses describe
   only the varying payload. If values recur across endpoints, list them once in
-  `### Enums`. Omit either section when it doesn't apply.
+  `### Enums`. If one response object (or a shared pagination block) is returned
+  by many endpoints, document it once too: a heavily-shared object in its own
+  `### The <resource> object` subsection of Basics, an object shared by only two
+  or three endpoints inline in the first endpoint with a cross-reference from the
+  rest (as the bundled examples do). Omit any section that doesn't apply.
 - **Group shared context once.** Anything common to all endpoints (base URLs,
   auth, conventions, error model) lives under `## Basics`, never repeated per
   section. Keep the top-level headings to three — How to read this doc, Basics,
@@ -91,8 +95,15 @@ guessing.
   lozenge or an auto-built TOC in Confluence, note that the author can swap in
   the **Status** and **Table of Contents** macros.
 - **Plain URLs.** Write absolute `http(s)://` URLs (e.g. base URLs) as plain
-  text, not inside code spans — Confluence auto-links a URL in a code span and
-  renders a literal `< >` around it.
+  text — not inside a code span and not as a `[text](url)` link. Confluence
+  auto-links a URL in a code span and wraps it in a literal `< >`, and a base URL
+  with a path is a copy-paste value, not a navigable page. Base URLs include the
+  full version prefix (`https://api.example.com/v1`); the per-endpoint
+  `METHOD /path` line is then written relative to that base (`POST /orders`,
+  never `POST /v1/orders`), and the `curl` example uses the full absolute URL.
+- **Path placeholders.** Write path variables in brace style — `/orders/{id}`,
+  `/posts/{id}/comments` — matching the names in the Path parameters table. Don't
+  use colon style (`:id`).
 - **One line per paragraph.** Write each paragraph and list item on a single
   line — do not hard-wrap prose. Confluence renders a mid-paragraph newline as a
   line break, so wrapped source produces chopped-up, unnatural paragraphs.
@@ -102,7 +113,15 @@ guessing.
   `###` items under Basics and Endpoints. Don't list the document title, the
   Contents section itself, or `####` endpoint internals. Every link must point to
   a real heading slug (lowercase, spaces → hyphens, punctuation dropped), so name
-  sections plainly (`### Create order`).
+  sections plainly (`### Create order`). Append a trailing `<!-- omit from toc -->`
+  to the document title and the `## Contents` heading so editor TOC generators
+  (e.g. the Markdown All in One VS Code extension) regenerate this exact
+  two-level list instead of re-adding the title and Contents to it; the comment
+  is invisible in rendered GitHub/Confluence output.
+- **Escape pipes in tables.** A literal `|` inside a table cell splits the cell
+  and breaks the whole row, so write a nullable or union type with an escaped
+  pipe: `string \| null`, `object \| null`, `enum (status) \| null`. Never leave
+  the union pipe unescaped in a cell.
 - **Markdownlint-clean.** Blank lines around headings, lists, tables, and fenced
   blocks; a language on every fence (`http`, `json`, `bash`); single trailing
   newline; no trailing spaces.
