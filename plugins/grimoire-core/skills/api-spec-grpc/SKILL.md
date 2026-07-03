@@ -25,7 +25,7 @@ implement a client or server against without guessing.
    RPC section.
 3. **Assemble.** For a multi-RPC spec, lead with a two-level `## Contents` right
    after the intro (title, owner, overview); omit it for a single-RPC spec. Then
-   `## How to read this doc`, `## Basics` (the shared context as `###`
+   `## Orientation`, `## Fundamentals` (the shared context as `###`
    subsections, including the `### Package` `service` block listing all RPCs),
    and `## RPCs` with one `###` section per RPC (its detail blocks are `####`).
 4. **Fill concretely.** Use real `.proto` message definitions and realistic
@@ -42,10 +42,11 @@ implement a client or server against without guessing.
 
 - **`## Contents`** (multi-RPC specs only): at the top, right after the intro —
   a two-level list. Top level is the `##` sections, second level is the `###`
-  items under Basics and RPCs.
-- **`## How to read this doc`:** one-paragraph orientation + the status legend
-  (a table of paste-ready `**Status:**` lines).
-- **`## Basics`** (shared, written once): `### Package` (info + `service` block),
+  items under Fundamentals and RPCs.
+- **`## Orientation`:** one-paragraph orientation + the status legend (a plain
+  `Status | Meaning` legend mapping 🟡 Draft / 🟢 Stable / 🔴 Deprecated to their
+  meanings).
+- **`## Fundamentals`** (shared, written once): `### Package` (info + `service` block),
   `### Servers`, `### Authentication` (via metadata), `### Conventions`,
   optionally `### Enums` (proto enums reused across RPCs), then `### Errors`
   (canonical status-code table + `google.rpc.Status` detail).
@@ -72,23 +73,23 @@ implement a client or server against without guessing.
   the Type column as `Name (enum)`.
 - **Per-RPC status codes.** Give each RPC a `#### Status codes` table
   (`Code | When`) listing the codes it returns and the exact trigger — more
-  specific than the shared Errors table in Basics.
+  specific than the shared Errors table in Fundamentals.
 - **Shared enums (optional).** If proto enums recur across RPCs, list them once
   in `### Enums`; omit the section when there are none. (gRPC has no response
   envelope, so there's no "Response format" section — the `google.rpc.Status`
   error model in Errors covers the shared wrapper.)
 - **Group shared context once.** Anything common to all RPCs (package, servers,
-  auth, conventions, error model) lives under `## Basics`, never repeated per
-  section. Keep the top-level headings to three — How to read this doc, Basics,
+  auth, conventions, error model) lives under `## Fundamentals`, never repeated per
+  section. Keep the top-level headings to three — Orientation, Fundamentals,
   RPCs.
 - **Public services.** If the service needs no authentication, say so once: set
   `### Authentication` to "None — this service is public", omit the per-RPC
   **Auth** notes, and drop `PERMISSION_DENIED`/`UNAUTHENTICATED` from the shared
   status-code table.
 - **Per-RPC status.** Status is set per RPC, not per document. Define the legend
-  once in a **How to read this doc** section (a table of paste-ready
-  `**Status:** 🟡 Draft` / `🟢 Stable` / `🔴 Deprecated` lines and their
-  meanings), then put a single `**Status:**` line under each RPC heading.
+  once in an **Orientation** section (a plain `Status | Meaning` legend mapping
+  🟡 Draft / 🟢 Stable / 🔴 Deprecated to their meanings), then put a single
+  `**Status:**` line under each RPC heading.
 - **Confluence-portable.** The output is published to Confluence as well as
   GitHub, so use only portable Markdown — headings, tables, fenced code, lists,
   blockquotes, and emoji. Do **not** use GitHub-only alert callouts
@@ -103,9 +104,9 @@ implement a client or server against without guessing.
   line — do not hard-wrap prose. Confluence renders a mid-paragraph newline as a
   line break, so wrapped source produces chopped-up, unnatural paragraphs.
 - **Two-level Contents.** When present, Contents sits at the top — right after
-  the intro, before How to read this doc — as a two-level list: top level = the
-  `##` sections (How to read this doc, Basics, RPCs), second level = the `###`
-  items under Basics and RPCs. Don't list the document title, the Contents
+  the intro, before Orientation — as a two-level list: top level = the
+  `##` sections (Orientation, Fundamentals, RPCs), second level = the `###`
+  items under Fundamentals and RPCs. Don't list the document title, the Contents
   section itself, or `####` RPC internals. Every link must point to a real
   heading slug (lowercase, spaces → hyphens, punctuation dropped), so name
   sections plainly (`### CreateOrder`). Append a trailing `<!-- omit from toc -->`

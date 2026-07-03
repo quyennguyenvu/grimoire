@@ -6,8 +6,8 @@
 
 ## Contents <!-- omit from toc -->
 
-- [How to read this doc](#how-to-read-this-doc)
-- [Basics](#basics)
+- [Orientation](#orientation)
+- [Fundamentals](#fundamentals)
   - [Package](#package)
   - [Servers](#servers)
   - [Authentication](#authentication)
@@ -17,17 +17,17 @@
 - [RPCs](#rpcs)
   - [CreateOrder](#createorder)
 
-## How to read this doc
+## Orientation
 
-**Basics** describes everything the RPCs share: the proto package, servers, authentication, conventions, shared enums, and the status-code model. Each RPC then has its own section under **RPCs**, with its own status. To set a status, paste one of the lines below directly under the RPC heading:
+**Fundamentals** describes everything the RPCs share: the proto package, servers, authentication, conventions, shared enums, and the status-code model. Each RPC then has its own section under **RPCs**, with its own status:
 
-| Paste under the heading     | Meaning                                      |
-| --------------------------- | -------------------------------------------- |
-| `**Status:** 🟡 Draft`      | Work in progress; may change without notice. |
-| `**Status:** 🟢 Stable`     | Safe to build against.                       |
-| `**Status:** 🔴 Deprecated` | Avoid; scheduled for removal.                |
+| Status        | Meaning                                      |
+| ------------- | -------------------------------------------- |
+| 🟡 Draft      | Work in progress; may change without notice. |
+| 🟢 Stable     | Safe to build against.                       |
+| 🔴 Deprecated | Avoid; scheduled for removal.                |
 
-## Basics
+## Fundamentals
 
 ### Package
 

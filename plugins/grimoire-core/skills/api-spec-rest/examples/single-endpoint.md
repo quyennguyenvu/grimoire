@@ -4,9 +4,9 @@
 
 Returns the profile of the authenticated user. Web and mobile clients call it to render the account header and personalize the session.
 
-## How to read this doc
+## Orientation
 
-**Basics** describes everything the endpoints share: base URLs, authentication, conventions, and the error model. Each endpoint then has its own section under **Endpoints**, with its own status:
+**Fundamentals** describes everything the endpoints share: base URLs, authentication, conventions, and the error model. Each endpoint then has its own section under **Endpoints**, with its own status:
 
 | Status        | Meaning                                      |
 | ------------- | -------------------------------------------- |
@@ -14,7 +14,7 @@ Returns the profile of the authenticated user. Web and mobile clients call it to
 | 🟢 Stable     | Safe to build against.                       |
 | 🔴 Deprecated | Avoid; scheduled for removal.                |
 
-## Basics
+## Fundamentals
 
 ### Base URLs
 

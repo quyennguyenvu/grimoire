@@ -6,8 +6,8 @@
 
 ## Contents <!-- omit from toc -->
 
-- [How to read this doc](#how-to-read-this-doc)
-- [Basics](#basics)
+- [Orientation](#orientation)
+- [Fundamentals](#fundamentals)
   - [Base URLs](#base-urls)
   - [Authentication](#authentication)
   - [Conventions](#conventions)
@@ -17,17 +17,17 @@
 - [Endpoints](#endpoints)
   - [Create order](#create-order)
 
-## How to read this doc
+## Orientation
 
-**Basics** describes everything the endpoints share: base URLs, authentication, conventions, the response envelope, shared enums, and the error model. Each endpoint then has its own section under **Endpoints**, with its own status. To set a status, paste one of the lines below directly under the endpoint heading:
+**Fundamentals** describes everything the endpoints share: base URLs, authentication, conventions, the response envelope, shared enums, and the error model. Each endpoint then has its own section under **Endpoints**, with its own status:
 
-| Paste under the heading     | Meaning                                      |
-| --------------------------- | -------------------------------------------- |
-| `**Status:** 🟡 Draft`      | Work in progress; may change without notice. |
-| `**Status:** 🟢 Stable`     | Safe to build against.                       |
-| `**Status:** 🔴 Deprecated` | Avoid; scheduled for removal.                |
+| Status        | Meaning                                      |
+| ------------- | -------------------------------------------- |
+| 🟡 Draft      | Work in progress; may change without notice. |
+| 🟢 Stable     | Safe to build against.                       |
+| 🔴 Deprecated | Avoid; scheduled for removal.                |
 
-## Basics
+## Fundamentals
 
 ### Base URLs
 

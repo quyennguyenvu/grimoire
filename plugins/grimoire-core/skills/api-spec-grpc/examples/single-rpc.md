@@ -4,9 +4,9 @@
 
 Liveness and readiness probe for the orders platform. Load balancers and Kubernetes call it to decide whether to route traffic to an instance. It is public — no authentication required.
 
-## How to read this doc
+## Orientation
 
-**Basics** describes everything the RPCs share: the proto package, servers, authentication, conventions, shared enums, and the status-code model. Each RPC then has its own section under **RPCs**, with its own status:
+**Fundamentals** describes everything the RPCs share: the proto package, servers, authentication, conventions, shared enums, and the status-code model. Each RPC then has its own section under **RPCs**, with its own status:
 
 | Status        | Meaning                                      |
 | ------------- | -------------------------------------------- |
@@ -14,7 +14,7 @@ Liveness and readiness probe for the orders platform. Load balancers and Kuberne
 | 🟢 Stable     | Safe to build against.                       |
 | 🔴 Deprecated | Avoid; scheduled for removal.                |
 
-## Basics
+## Fundamentals
 
 ### Package
 

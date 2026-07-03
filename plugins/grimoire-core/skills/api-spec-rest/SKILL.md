@@ -24,7 +24,7 @@ guessing.
    endpoint section.
 3. **Assemble.** For a multi-endpoint spec, lead with a two-level `## Contents`
    right after the intro (title, owner, overview); omit it for a single-endpoint
-   spec. Then `## How to read this doc`, `## Basics` (the shared context as
+   spec. Then `## Orientation`, `## Fundamentals` (the shared context as
    `###` subsections), and `## Endpoints` with one `###` section per endpoint
    (its detail blocks are `####`).
 4. **Fill concretely.** Use realistic values in every JSON and `curl` example so
@@ -40,10 +40,11 @@ guessing.
 
 - **`## Contents`** (multi-endpoint specs only): at the top, right after the
   intro — a two-level list. Top level is the `##` sections, second level is the
-  `###` items under Basics and Endpoints.
-- **`## How to read this doc`:** one-paragraph orientation + the status legend
-  (a table of paste-ready `**Status:**` lines).
-- **`## Basics`** (shared, written once): `### Base URLs`, `### Authentication`,
+  `###` items under Fundamentals and Endpoints.
+- **`## Orientation`:** one-paragraph orientation + the status legend (a plain
+  `Status | Meaning` legend mapping 🟡 Draft / 🟢 Stable / 🔴 Deprecated to their
+  meanings).
+- **`## Fundamentals`** (shared, written once): `### Base URLs`, `### Authentication`,
   `### Conventions`, optionally `### Response format` (the shared envelope) and
   `### Enums` (values reused across endpoints), then `### Errors` (envelope +
   status/code table).
@@ -67,26 +68,26 @@ guessing.
   Reference a shared enum in the Type column as `enum (name)`.
 - **Per-endpoint errors.** Give each endpoint a `#### Errors` table
   (`Status | Code | When`) listing the codes it returns and the exact trigger —
-  more specific than the shared Errors table in Basics.
+  more specific than the shared Errors table in Fundamentals.
 - **Optional shared sections.** If every response is wrapped, document the
   envelope once in `### Response format` and have endpoint responses describe
   only the varying payload. If values recur across endpoints, list them once in
   `### Enums`. If one response object (or a shared pagination block) is returned
   by many endpoints, document it once too: a heavily-shared object in its own
-  `### The <resource> object` subsection of Basics, an object shared by only two
-  or three endpoints inline in the first endpoint with a cross-reference from the
-  rest (as the bundled examples do). Omit any section that doesn't apply.
+  `### The <resource> object` subsection of Fundamentals, an object shared by only
+  two or three endpoints inline in the first endpoint with a cross-reference from
+  the rest (as the bundled examples do). Omit any section that doesn't apply.
 - **Group shared context once.** Anything common to all endpoints (base URLs,
-  auth, conventions, error model) lives under `## Basics`, never repeated per
-  section. Keep the top-level headings to three — How to read this doc, Basics,
+  auth, conventions, error model) lives under `## Fundamentals`, never repeated per
+  section. Keep the top-level headings to three — Orientation, Fundamentals,
   Endpoints.
 - **Public APIs.** If the API needs no authentication, say so once: set
   `### Authentication` to "None — this API is public", omit the per-endpoint
   **Auth** notes, and drop `401`/`403` from the shared error table.
 - **Per-endpoint status.** Status is set per endpoint, not per document. Define
-  the legend once in a **How to read this doc** section (a table of paste-ready
-  `**Status:** 🟡 Draft` / `🟢 Stable` / `🔴 Deprecated` lines and their
-  meanings), then put a single `**Status:**` line under each endpoint heading.
+  the legend once in an **Orientation** section (a plain `Status | Meaning` legend
+  mapping 🟡 Draft / 🟢 Stable / 🔴 Deprecated to their meanings), then put a
+  single `**Status:**` line under each endpoint heading.
 - **Confluence-portable.** The output is published to Confluence as well as
   GitHub, so use only portable Markdown — headings, tables, fenced code, lists,
   blockquotes, and emoji. Do **not** use GitHub-only alert callouts
@@ -108,9 +109,9 @@ guessing.
   line — do not hard-wrap prose. Confluence renders a mid-paragraph newline as a
   line break, so wrapped source produces chopped-up, unnatural paragraphs.
 - **Two-level Contents.** When present, Contents sits at the top — right after
-  the intro, before How to read this doc — as a two-level list: top level = the
-  `##` sections (How to read this doc, Basics, Endpoints), second level = the
-  `###` items under Basics and Endpoints. Don't list the document title, the
+  the intro, before Orientation — as a two-level list: top level = the
+  `##` sections (Orientation, Fundamentals, Endpoints), second level = the
+  `###` items under Fundamentals and Endpoints. Don't list the document title, the
   Contents section itself, or `####` endpoint internals. Every link must point to
   a real heading slug (lowercase, spaces → hyphens, punctuation dropped), so name
   sections plainly (`### Create order`). Append a trailing `<!-- omit from toc -->`

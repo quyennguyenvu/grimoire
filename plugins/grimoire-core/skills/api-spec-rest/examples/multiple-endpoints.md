@@ -6,8 +6,8 @@ Create and manage customer orders. Every endpoint shares the base URL, authentic
 
 ## Contents <!-- omit from toc -->
 
-- [How to read this doc](#how-to-read-this-doc)
-- [Basics](#basics)
+- [Orientation](#orientation)
+- [Fundamentals](#fundamentals)
   - [Base URLs](#base-urls)
   - [Authentication](#authentication)
   - [Conventions](#conventions)
@@ -19,9 +19,9 @@ Create and manage customer orders. Every endpoint shares the base URL, authentic
   - [List orders](#list-orders)
   - [Cancel order](#cancel-order)
 
-## How to read this doc
+## Orientation
 
-**Basics** describes everything the endpoints share: base URLs, authentication, conventions, shared enums, and the error model. Each endpoint then has its own section under **Endpoints**, with its own status:
+**Fundamentals** describes everything the endpoints share: base URLs, authentication, conventions, shared enums, and the error model. Each endpoint then has its own section under **Endpoints**, with its own status:
 
 | Status        | Meaning                                      |
 | ------------- | -------------------------------------------- |
@@ -29,7 +29,7 @@ Create and manage customer orders. Every endpoint shares the base URL, authentic
 | 🟢 Stable     | Safe to build against.                       |
 | 🔴 Deprecated | Avoid; scheduled for removal.                |
 
-## Basics
+## Fundamentals
 
 ### Base URLs
 
