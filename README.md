@@ -32,6 +32,7 @@ The marketplace (`grimoire`) currently publishes one plugin, `grimoire-core`:
 | `api-spec-grpc`      | Skill   | Drafts a standardized Markdown gRPC API spec — one RPC, or several sharing a proto package/server/auth — with proto messages, streaming type, `grpcurl` examples, and the gRPC status-code error model. | auto by intent, or ask to "draft a gRPC API spec"            |
 | `arch-diagram`       | Skill   | Emits architecture diagrams as code — picks the notation (C4, sequence, class, ER, state, flowchart, deployment, roadmap) and writes renderable Mermaid (default) or PlantUML (fallback).               | auto by intent, or ask to "draw a C4/sequence diagram"       |
 | `arch-decision`      | Skill   | Drafts an Architecture Decision Record or lightweight RFC — context, drivers, options with honest trade-offs, decision, and consequences — from a MADR-style template.                                  | auto by intent, or ask to "write an ADR for X"               |
+| `daily-log`          | Skill   | Reconstructs a copy-pasteable standup log (Done / In progress / Blockers) from git commit history — across the current repo or a container of repos, resolving your author identity per-repo.           | auto by intent, or ask to "write my daily log"               |
 | `commit`             | Command | Stages changes and writes a Conventional Commits message from the diff.                                                                                                                                 | **`/grimoire-core:commit`**                                  |
 
 ## Setup
@@ -206,6 +207,8 @@ grimoire/
 │           │       ├── sequence.md
 │           │       ├── erd.md
 │           │       └── class-uml.md
+│           ├── daily-log/
+│           │   └── SKILL.md
 │           └── senior-engineer/
 │               └── SKILL.md
 ├── CLAUDE.md                        # authoring guidance for Claude Code
