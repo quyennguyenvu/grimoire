@@ -1,7 +1,7 @@
 {
   "name": "grimoire-core",
   "version": "0.3.0",
-  "description": "Opinionated Claude Code personas and utilities: code-reviewer, researcher, writer, finance-modeler, presenter, and software-architect subagents; senior-engineer, API-spec, and architecture diagram/decision skills; and Conventional Commits and daily-log slash commands.",
+  "description": "Opinionated Claude Code personas and utilities: code-reviewer, researcher, writer, finance-modeler, presenter, and software-architect subagents; senior-engineer, API-spec, and architecture diagram/decision skills; and Conventional Commits and standup slash commands.",
   "author": {
     "name": "quyennguyenvu"
   }
