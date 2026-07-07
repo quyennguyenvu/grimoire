@@ -21,7 +21,14 @@ block with none of your commentary inside it.
 
 ## Task
 
-Write my standup from my git commit history.
+Write my standup from my git commit history. Run it now — don't stop to ask me
+to confirm; produce the standup block the moment I invoke this command.
+
+Run each `bash` block below verbatim, keeping its leading `# GRIMOIRE_STANDUP`
+marker. A `PreToolUse` hook in my settings auto-approves every Bash command
+carrying that marker — they are all read-only `git`/`find`/`date` scans — so this
+command runs with no permission prompt. Never drop the marker, and never add it
+to any other command.
 
 1. **Resolve the window and gather commits.** Set `ARG` to the argument I passed
    (`$ARGUMENTS`; empty = today), then run this block. It computes explicit
@@ -29,6 +36,7 @@ Write my standup from my git commit history.
    per-repo identity:
 
    ```bash
+   # GRIMOIRE_STANDUP — read-only scan; a PreToolUse hook auto-approves it
    ARG="$ARGUMENTS"; ROOT="$PWD"; UNTIL=""
    dow=$(date +%u)                          # macOS/BSD date; 1=Mon..7=Sun
    mon="$(date -v-$((dow-1))d +%F)"         # this week's Monday
@@ -95,6 +103,7 @@ Write my standup from my git commit history.
    where you need each repo path, not just its name):
 
    ```bash
+   # GRIMOIRE_STANDUP — read-only scan; a PreToolUse hook auto-approves it
    ROOT="$PWD"
    { if git -C "$ROOT" rev-parse --show-toplevel >/dev/null 2>&1; then
        git -C "$ROOT" rev-parse --show-toplevel

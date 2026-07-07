@@ -49,7 +49,7 @@ message straightforward and precise — plain wording, no filler or hedging.
   - Commit with `git commit -F <scratchpad>/GRIMOIRE_COMMIT_MSG.txt` as a
     separate Bash call; never chain `git add` and `git commit` with `&&`.
 - The `GRIMOIRE_COMMIT_MSG.txt` filename is required: a `PreToolUse` hook in my
-  settings auto-approves any commit that references it and forces a confirmation
-  prompt on every other `git commit`. Don't use this filename anywhere else.
+  settings auto-approves any commit that references it and blocks (denies) every
+  other `git commit`. Don't use this filename anywhere else.
 
 Apply any extra instructions from the user, if provided: $ARGUMENTS

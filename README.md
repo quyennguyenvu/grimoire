@@ -148,6 +148,63 @@ After cleanup, the only source of these components is the installed
 `grimoire-core` plugin. Confirm with `/agents` and `/help` that each appears
 exactly once.
 
+## Optional: run `commit` and `standup` without permission prompts
+
+`standup` prints its log the moment you invoke it; `commit` drafts a message and,
+once you confirm, commits it. In both cases the underlying `git` / `find` /
+`date` work would normally raise a Claude Code tool-permission prompt. Two
+`PreToolUse` hooks auto-approve exactly those commands so the flow isn't
+interrupted — and the commit hook doubles as a guard that **blocks** any commit
+that didn't come from `commit` (e.g. an auto-commit from another tool), so
+nothing lands behind your back.
+
+These hooks live in your **user-global** `~/.claude/settings.json` — _not_ in the
+plugin. A marketplace plugin shouldn't silently alter your permission system, so
+they are opt-in and per-machine. Without them the commands still work; Claude
+just prompts before each git command (and before the commit itself). To enable
+the frictionless flow, add both hooks:
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r '.tool_input.command // \"\"'); if echo \"$cmd\" | grep -qE '\\bgit[[:space:]]+commit($|[^-a-zA-Z0-9_])'; then if echo \"$cmd\" | grep -qF 'GRIMOIRE_COMMIT_MSG'; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Commit via /commit (already confirmed in chat).\"}}'; else echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Blocked: commits must go through the /commit command (it references GRIMOIRE_COMMIT_MSG). Do not commit any other way; if a commit is genuinely needed, tell the user to run /commit or commit manually in their own terminal.\"}}'; fi; fi"
+          },
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r '.tool_input.command // \"\"'); if echo \"$cmd\" | head -n1 | grep -qE '^[[:space:]]*# GRIMOIRE_STANDUP'; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Read-only standup scan via /standup.\"}}'; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+- **Commit hook** — auto-approves a `git commit` only when it references the
+  `GRIMOIRE_COMMIT_MSG` file that `commit` writes; every other `git commit` —
+  including auto-commits from other tools — is **denied**. (Prefer a prompt over
+  a hard block? Change that branch's `permissionDecision` from `deny` to `ask`.)
+- **Standup hook** — auto-approves a Bash command only when its **first line** is
+  the `# GRIMOIRE_STANDUP` marker that `standup` puts on its read-only scans.
+
+If you already have a `PreToolUse` block matching `Bash`, **merge** these two
+entries into its `hooks` array rather than replacing it. After saving, open
+`/hooks` once (or restart Claude Code) so the config reloads.
+
+> [!WARNING]
+> These hooks approve commands by a marker string, which is forgeable — treat
+> them as a convenience you opt into, not a security boundary. The standup hook
+> only matches the `# GRIMOIRE_STANDUP` comment the command emits on a read-only
+> scan; the commit hook **denies** any commit that didn't come from `commit`
+> (manual commits in your own terminal are unaffected — hooks fire only on
+> Claude's tool calls).
+
 ## Agents vs. skills vs. commands
 
 - **Agents** (`agents/`) are _subagents_ — separate personas Claude delegates a
