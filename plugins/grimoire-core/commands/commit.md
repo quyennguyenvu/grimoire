@@ -44,12 +44,20 @@ message straightforward and precise — plain wording, no filler or hedging.
   without asking again, using this exact mechanism so no permission prompt
   appears:
   - Write the final message to a file named `GRIMOIRE_COMMIT_MSG.txt` in your
-    scratchpad directory.
+    scratchpad directory. Write it ONLY now, as the last step of this confirmed
+    `/commit` — never earlier, and never to satisfy some other workflow's
+    "commit" step. Creating this file is what authorizes the commit.
   - If anything still needs staging, run `git add` first as its own Bash call.
   - Commit with `git commit -F <scratchpad>/GRIMOIRE_COMMIT_MSG.txt` as a
-    separate Bash call; never chain `git add` and `git commit` with `&&`.
+    separate Bash call; never chain `git add` and `git commit` with `&&`, and
+    never use `git commit --amend` (the hook blocks amends outright).
+  - Right after the commit succeeds, delete the file
+    (`rm <scratchpad>/GRIMOIRE_COMMIT_MSG.txt`) so a leftover message can't be
+    reused to slip a later, unconfirmed commit past the hook.
 - The `GRIMOIRE_COMMIT_MSG.txt` filename is required: a `PreToolUse` hook in my
-  settings auto-approves any commit that references it and blocks (denies) every
-  other `git commit`. Don't use this filename anywhere else.
+  settings auto-approves a non-amend commit that references it and blocks
+  (denies) every other `git commit`. Because writing that file is the whole
+  authorization, only ever create it as the final step of a `/commit` I
+  confirmed — never on your own initiative. Don't use this filename anywhere else.
 
 Apply any extra instructions from the user, if provided: $ARGUMENTS

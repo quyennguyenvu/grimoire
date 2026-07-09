@@ -154,9 +154,10 @@ exactly once.
 once you confirm, commits it. In both cases the underlying `git` / `find` /
 `date` work would normally raise a Claude Code tool-permission prompt. Two
 `PreToolUse` hooks auto-approve exactly those commands so the flow isn't
-interrupted — and the commit hook doubles as a guard that **blocks** any commit
-that didn't come from `commit` (e.g. an auto-commit from another tool), so
-nothing lands behind your back.
+interrupted — and the commit hook doubles as a guard that **denies** any
+`git commit` that doesn't carry `commit`'s marker file, plus every
+history-rewriting `git commit --amend`. Treat it as a speed bump against stray
+commits, not an authorization boundary — see the warning below.
 
 These hooks live in your **user-global** `~/.claude/settings.json` — _not_ in the
 plugin. A marketplace plugin shouldn't silently alter your permission system, so
@@ -173,7 +174,7 @@ the frictionless flow, add both hooks:
         "hooks": [
           {
             "type": "command",
-            "command": "cmd=$(jq -r '.tool_input.command // \"\"'); if echo \"$cmd\" | grep -qE '\\bgit[[:space:]]+commit($|[^-a-zA-Z0-9_])'; then if echo \"$cmd\" | grep -qF 'GRIMOIRE_COMMIT_MSG'; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Commit via /commit (already confirmed in chat).\"}}'; else echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Blocked: commits must go through the /commit command (it references GRIMOIRE_COMMIT_MSG). Do not commit any other way; if a commit is genuinely needed, tell the user to run /commit or commit manually in their own terminal.\"}}'; fi; fi"
+            "command": "cmd=$(jq -r '.tool_input.command // \"\"'); if echo \"$cmd\" | grep -qE '\\bgit[[:space:]]+commit($|[^-a-zA-Z0-9_])'; then if echo \"$cmd\" | grep -qE -- '(^|[^-a-zA-Z0-9_])--amend([^a-zA-Z0-9_]|$)'; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Blocked: git commit --amend rewrites history and is never auto-approved. If you truly need to amend, do it manually in your own terminal.\"}}'; elif echo \"$cmd\" | grep -qF 'GRIMOIRE_COMMIT_MSG'; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Commit via /commit (already confirmed in chat).\"}}'; else echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Blocked: commits must go through the /commit command (it references GRIMOIRE_COMMIT_MSG). Do not commit any other way; if a commit is genuinely needed, tell the user to run /commit or commit manually in their own terminal.\"}}'; fi; fi"
           },
           {
             "type": "command",
@@ -187,9 +188,11 @@ the frictionless flow, add both hooks:
 ```
 
 - **Commit hook** — auto-approves a `git commit` only when it references the
-  `GRIMOIRE_COMMIT_MSG` file that `commit` writes; every other `git commit` —
-  including auto-commits from other tools — is **denied**. (Prefer a prompt over
-  a hard block? Change that branch's `permissionDecision` from `deny` to `ask`.)
+  `GRIMOIRE_COMMIT_MSG` file that `commit` writes **and** is not a `--amend`.
+  Every other `git commit` — a bare `git commit -m`, an auto-commit from another
+  tool or workflow, or any `git commit --amend` (history rewrite) — is
+  **denied**. (Prefer a prompt over a hard block? Change a branch's
+  `permissionDecision` from `deny` to `ask`.)
 - **Standup hook** — auto-approves a Bash command only when its **first line** is
   the `# GRIMOIRE_STANDUP` marker that `standup` puts on its read-only scans.
 
@@ -199,11 +202,49 @@ entries into its `hooks` array rather than replacing it. After saving, open
 
 > [!WARNING]
 > These hooks approve commands by a marker string, which is forgeable — treat
-> them as a convenience you opt into, not a security boundary. The standup hook
-> only matches the `# GRIMOIRE_STANDUP` comment the command emits on a read-only
-> scan; the commit hook **denies** any commit that didn't come from `commit`
-> (manual commits in your own terminal are unaffected — hooks fire only on
-> Claude's tool calls).
+> them as a convenience you opt into, not a security boundary. Crucially, the
+> marker is forgeable **by Claude itself**: the commit hook trusts the presence
+> of the `GRIMOIRE_COMMIT_MSG` file as proof that you confirmed, but nothing
+> stops an autonomous workflow (a plan executor, a "commit per task" loop, or a
+> reused leftover file) from writing that file and committing without ever
+> asking you. The hook cannot tell a confirmed `/commit` from a forged one. If
+> you rely on reviewing every commit, add a matching rule to your `CLAUDE.md` —
+> "never write `GRIMOIRE_COMMIT_MSG.txt` or run `git commit` outside a `/commit`
+> I confirmed" — because that behavioral instruction is the real control; the
+> hook is only a backstop that also blocks stray commits and all `--amend`
+> history rewrites. The standup hook only matches the `# GRIMOIRE_STANDUP`
+> comment the command emits on a read-only scan. (Manual commits in your own
+> terminal are unaffected — hooks fire only on Claude's tool calls.)
+
+### Pair the commit hook with a `CLAUDE.md` rule (strongly recommended)
+
+The hook is only a backstop — as the warning notes, Claude can satisfy it by
+writing the `GRIMOIRE_COMMIT_MSG` file and committing on its own. The
+instruction that actually keeps every commit under your review is a behavioral
+rule in your **user-global** `~/.claude/CLAUDE.md`. Keeping it here means it
+travels with grimoire: on a new machine you paste the hook above **and** this
+rule, and you're back in sync. Add these to that file's `## Git` section (create
+the file or section if it doesn't exist yet):
+
+```markdown
+## Git
+
+- **Only ever create a commit through the `/grimoire-core:commit` command, and
+  only after I have explicitly confirmed the drafted message in that same
+  exchange.** Never run `git commit` (with `-m`, `-F`, or `--amend`) on your own
+  initiative, and never write a `GRIMOIRE_COMMIT_MSG.txt` file except as the
+  final step of a `/commit` I just confirmed — writing that file _is_ the commit
+  authorization, so creating it for any other reason forges my approval. If a
+  skill or workflow (plan execution, "commit per task", finishing a branch,
+  etc.) reaches a commit step, stop and ask me to run `/commit`; do not
+  auto-commit to keep the workflow moving.
+- Never use `git commit --amend` — it rewrites history and is blocked by the
+  commit hook. If a commit genuinely needs amending, tell me and I'll do it
+  manually in my own terminal.
+```
+
+With both halves in the repo, a new machine is fully in sync after just those
+two pastes.
 
 ## Agents vs. skills vs. commands
 
