@@ -70,10 +70,12 @@ to any other command.
    which picks up directory-scoped `includeIf` identities — so different orgs
    resolve to different emails on their own. Never hardcode an email or use
    `--global`. Repos with no identity are skipped.
-3. **Synthesize, don't transcribe.** Group by repo and collapse each repo's
-   commits into **one** plain-language bullet (map `feat` → added/shipped,
-   `fix` → fixed, `refactor` → reworked; drop the `type(scope):` prefix). The
-   reader wants the story, not raw subject lines.
+3. **Synthesize, don't transcribe.** Rewrite the work in plain language (map
+   `feat` → added/shipped, `fix` → fixed, `refactor` → reworked; drop the
+   `type(scope):` prefix), and emit **one bullet per distinct piece of work** so
+   each line is a point I can report on its own — never collapse a repo's whole
+   day into a single sentence. Merge only near-duplicates (a commit and its
+   immediate follow-up). Prefix each bullet with its repo (`duvel: …`).
 4. **Emit exactly one fenced `markdown` block**, nothing else inside it, so I can
    paste it verbatim (the outer fence below is only to display the shape). Title
    the block with the day (`## 2026-07-07 — Standup`) for a single-day window, or
@@ -85,8 +87,9 @@ to any other command.
 
    **Done today**
 
-   - duvel: shipped consumer "comment is gone" messages, fixed the creator react
-     count, and published action-log events for post mutations
+   - duvel: shipped consumer "comment is gone" messages
+   - duvel: fixed the creator react count
+   - duvel: published action-log events for post mutations
 
    **In progress**
 
