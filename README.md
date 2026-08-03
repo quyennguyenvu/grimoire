@@ -15,34 +15,70 @@ from GitHub — or from a local clone if you'd rather hack on it.
 > **`/grimoire-core:commit`**, not `/commit`. Agents and skills are still
 > referred to by their bare name (e.g. "use the `code-reviewer` agent").
 
+## Contents
+
+- [What's inside](#whats-inside) — the catalog of agents, skills, and commands
+- [Install](#install) — prerequisites, register, install, verify
+- [Update and uninstall](#update-and-uninstall)
+- [Optional: skip permission prompts](#optional-skip-permission-prompts) — hooks
+  for `commit` and `standup`
+- [Global CLAUDE.md rules](#global-claudemd-rules) — the behavioral half of the
+  commit guard
+- [Repository layout](#repository-layout)
+- [Adding your own](#adding-your-own)
+- [Appendix: migrating from the old symlink setup](#appendix-migrating-from-the-old-symlink-setup)
+
 ## What's inside
 
-The marketplace (`grimoire`) currently publishes one plugin, `grimoire-core`:
+The marketplace (`grimoire`) currently publishes one plugin, `grimoire-core`,
+containing three kinds of component.
 
-| Component            | Type    | What it does                                                                                                                                                                                            | Invoke as                                                    |
-| -------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| `code-reviewer`      | Agent   | Read-only code review (Go-fluent) — correctness, error handling, concurrency, security, idioms. Returns prioritized findings, makes no edits.                                                           | delegated by description, or "use the `code-reviewer` agent" |
-| `researcher`         | Agent   | Web research, competitor scans, market sizing. Reads many sources, returns a distilled, cited summary.                                                                                                  | "have the `researcher` size the market for X"                |
-| `writer`             | Agent   | Drafts and edits clean, persuasive prose — docs, listings, posts, emails, landing copy.                                                                                                                 | "use the `writer` to draft …"                                |
-| `finance-modeler`    | Agent   | Cost models, unit economics, break-even, pricing scenarios, P&L. Auditable CSV/markdown with assumptions laid bare.                                                                                     | "use the `finance-modeler` for …"                            |
-| `presenter`          | Agent   | Turns source docs and data into slide decks and visual reports with charts.                                                                                                                             | "use the `presenter` to build a deck"                        |
-| `software-architect` | Agent   | Designs a system or feature into a small architecture package — C4/sequence/ER diagrams, ADRs, and a linking design brief. Explores the code first, delegates formatting to its skills.                 | "use the `software-architect` to design X"                   |
-| `senior-engineer`    | Skill   | Hyper-concise pair-programming mode: direct answer → code → trade-offs. Zero fluff, exact terminology.                                                                                                  | auto by intent, or ask for "senior-engineer mode"            |
-| `api-spec-rest`      | Skill   | Drafts a standardized Markdown REST/HTTP API spec — one endpoint, or several sharing a domain/base URL/auth — with parameter and schema tables, examples, and a shared error model.                     | auto by intent, or ask to "draft a REST API spec"            |
-| `api-spec-grpc`      | Skill   | Drafts a standardized Markdown gRPC API spec — one RPC, or several sharing a proto package/server/auth — with proto messages, streaming type, `grpcurl` examples, and the gRPC status-code error model. | auto by intent, or ask to "draft a gRPC API spec"            |
-| `arch-diagram`       | Skill   | Emits architecture diagrams as code — picks the notation (C4, sequence, class, ER, state, flowchart, deployment, roadmap) and writes renderable Mermaid (default) or PlantUML (fallback).               | auto by intent, or ask to "draw a C4/sequence diagram"       |
-| `arch-decision`      | Skill   | Drafts an Architecture Decision Record or lightweight RFC — context, drivers, options with honest trade-offs, decision, and consequences — from a MADR-style template.                                  | auto by intent, or ask to "write an ADR for X"               |
-| `commit`             | Command | Stages changes and writes a Conventional Commits message from the diff.                                                                                                                                 | **`/grimoire-core:commit`**                                  |
-| `standup`            | Command | Reconstructs a copy-pasteable standup log (Done / In progress / Blockers) from git commit history — current repo or a container of repos, per-repo identity, local-midnight day/week windows.           | **`/grimoire-core:standup`**                                 |
+### Agents
 
-## Setup
+_Subagents_ — separate personas Claude delegates a task to. Each runs in its own
+context with a restricted tool set, then returns a result. Good for offloading
+focused, self-contained work ("review this diff", "size this market").
 
-### 1. Prerequisites
+| Agent                | What it does                                                                                                                                                                            | Invoke as                                                    |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `code-reviewer`      | Read-only code review (Go-fluent) — correctness, error handling, concurrency, security, idioms. Returns prioritized findings, makes no edits.                                           | delegated by description, or "use the `code-reviewer` agent" |
+| `researcher`         | Web research, competitor scans, market sizing. Reads many sources, returns a distilled, cited summary.                                                                                  | "have the `researcher` size the market for X"                |
+| `writer`             | Drafts and edits clean, persuasive prose — docs, listings, posts, emails, landing copy.                                                                                                 | "use the `writer` to draft …"                                |
+| `finance-modeler`    | Cost models, unit economics, break-even, pricing scenarios, P&L. Auditable CSV/markdown with assumptions laid bare.                                                                     | "use the `finance-modeler` for …"                            |
+| `presenter`          | Turns source docs and data into slide decks and visual reports with charts.                                                                                                             | "use the `presenter` to build a deck"                        |
+| `software-architect` | Designs a system or feature into a small architecture package — C4/sequence/ER diagrams, ADRs, and a linking design brief. Explores the code first, delegates formatting to its skills. | "use the `software-architect` to design X"                   |
+
+### Skills
+
+Response modes — they change how Claude itself answers in the main conversation
+rather than spawning a subagent. Claude activates them by intent; you can also
+ask for one by name.
+
+| Skill             | What it does                                                                                                                                                                                            | Invoke as                                              |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `senior-engineer` | Hyper-concise pair-programming mode: direct answer → code → trade-offs. Zero fluff, exact terminology.                                                                                                  | auto by intent, or ask for "senior-engineer mode"      |
+| `api-spec-rest`   | Drafts a standardized Markdown REST/HTTP API spec — one endpoint, or several sharing a domain/base URL/auth — with parameter and schema tables, examples, and a shared error model.                     | auto by intent, or ask to "draft a REST API spec"      |
+| `api-spec-grpc`   | Drafts a standardized Markdown gRPC API spec — one RPC, or several sharing a proto package/server/auth — with proto messages, streaming type, `grpcurl` examples, and the gRPC status-code error model. | auto by intent, or ask to "draft a gRPC API spec"      |
+| `arch-diagram`    | Emits architecture diagrams as code — picks the notation (C4, sequence, class, ER, state, flowchart, deployment, roadmap) and writes renderable Mermaid (default) or PlantUML (fallback).               | auto by intent, or ask to "draw a C4/sequence diagram" |
+| `arch-decision`   | Drafts an Architecture Decision Record or lightweight RFC — context, drivers, options with honest trade-offs, decision, and consequences — from a MADR-style template.                                  | auto by intent, or ask to "write an ADR for X"         |
+
+### Commands
+
+Parameterized prompts invoked with a slash, namespaced by the plugin name.
+
+| Command   | What it does                                                                                                                                                                                  | Invoke as                    |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| `commit`  | Stages changes and writes a Conventional Commits message from the diff.                                                                                                                       | **`/grimoire-core:commit`**  |
+| `standup` | Reconstructs a copy-pasteable standup log (Done / In progress / Blockers) from git commit history — current repo or a container of repos, per-repo identity, local-midnight day/week windows. | **`/grimoire-core:standup`** |
+
+## Install
+
+### Prerequisites
 
 - **Claude Code ≥ 2.1** (`claude --version`). Plugin marketplaces are supported
   in current releases.
 
-### 2. Register the marketplace
+### 1. Register the marketplace
 
 From a terminal:
 
@@ -63,14 +99,14 @@ registers a marketplace named **`grimoire`**. You can also pass the full URL
 > [!TIP]
 > **Working on the spells yourself?** Clone the repo and register it from the
 > local path instead — edits then take effect after a marketplace update (see
-> step 5):
+> [Update and uninstall](#update-and-uninstall)):
 >
 > ```sh
 > git clone https://github.com/quyennguyenvu/grimoire.git
 > claude plugin marketplace add ./grimoire   # or an absolute path
 > ```
 
-### 3. Install the plugin
+### 2. Install the plugin
 
 ```sh
 claude plugin install grimoire-core@grimoire
@@ -85,17 +121,21 @@ Or in-session:
 The plugin is **copied into Claude Code's plugin cache** at install time — it
 does not run from your working tree.
 
-### 4. Verify
+### 3. Verify
 
 - `/plugin` — opens the plugin manager; `grimoire-core` should be listed and
   enabled.
-- `/help` — the `commit` command appears as **`/grimoire-core:commit`**.
-- `/agents` — `code-reviewer`, `researcher`, `writer`, `finance-modeler`, and
-  `presenter` are listed (under the `grimoire-core` plugin).
-- The `senior-engineer` skill is available — ask for "senior-engineer mode" and
-  Claude switches into the terse response style.
+- `/help` — the commands appear as **`/grimoire-core:commit`** and
+  **`/grimoire-core:standup`**.
+- `/agents` — `code-reviewer`, `researcher`, `writer`, `finance-modeler`,
+  `presenter`, and `software-architect` are listed (under the `grimoire-core`
+  plugin).
+- The skills are available — ask for "senior-engineer mode" and Claude switches
+  into the terse response style.
 
-### 5. Update to the latest version
+## Update and uninstall
+
+### Update to the latest version
 
 The plugin is copied into the cache at install time, so new changes only take
 effect after you refresh the marketplace. Pull the latest from GitHub with:
@@ -115,7 +155,7 @@ Or in-session, then reload so non-skill components (commands/agents) re-read:
 > If you registered from a local clone, run `git pull` in it first — the
 > marketplace update copies from whatever the clone currently contains.
 
-### 6. Uninstall
+### Uninstall
 
 ```sh
 claude plugin uninstall grimoire-core@grimoire
@@ -124,31 +164,7 @@ claude plugin uninstall grimoire-core@grimoire
 Or in-session: `/plugin uninstall grimoire-core@grimoire`. To drop the
 marketplace entirely: `claude plugin marketplace remove grimoire`.
 
-### 7. Migrating from the old symlink setup
-
-Earlier versions of grimoire were installed by symlinking (or copying)
-`agents/`, `skills/`, and `commands/` into `~/.claude/`. Those copies will
-**shadow or duplicate** the plugin's components, so remove them after installing
-the plugin:
-
-```sh
-# Inspect what points into this repo first
-ls -la ~/.claude/agents ~/.claude/skills ~/.claude/commands
-
-# Remove the old symlinks / stale copies (review each before deleting):
-rm ~/.claude/skills                       # symlink to grimoire/skills
-rm ~/.claude/agents/agents                # stray symlink to grimoire/agents
-rm ~/.claude/agents/code-reviewer.md \
-   ~/.claude/agents/finance-modeler.md \
-   ~/.claude/agents/researcher.md \
-   ~/.claude/agents/writer.md             # stale copies
-```
-
-After cleanup, the only source of these components is the installed
-`grimoire-core` plugin. Confirm with `/agents` and `/help` that each appears
-exactly once.
-
-## Optional: run `commit` and `standup` without permission prompts
+## Optional: skip permission prompts
 
 `standup` prints its log the moment you invoke it; `commit` drafts a message and,
 once you confirm, commits it. In both cases the underlying `git` / `find` /
@@ -156,14 +172,14 @@ once you confirm, commits it. In both cases the underlying `git` / `find` /
 `PreToolUse` hooks auto-approve exactly those commands so the flow isn't
 interrupted — and the commit hook doubles as a guard that **denies** any
 `git commit` that doesn't carry `commit`'s marker file, plus every
-history-rewriting `git commit --amend`. Treat it as a speed bump against stray
-commits, not an authorization boundary — see the warning below.
+history-rewriting `git commit --amend`.
 
 These hooks live in your **user-global** `~/.claude/settings.json` — _not_ in the
 plugin. A marketplace plugin shouldn't silently alter your permission system, so
 they are opt-in and per-machine. Without them the commands still work; Claude
-just prompts before each git command (and before the commit itself). To enable
-the frictionless flow, add both hooks:
+just prompts before each git command (and before the commit itself).
+
+### Add the hooks
 
 ```json
 {
@@ -187,6 +203,12 @@ the frictionless flow, add both hooks:
 }
 ```
 
+If you already have a `PreToolUse` block matching `Bash`, **merge** these two
+entries into its `hooks` array rather than replacing it. After saving, open
+`/hooks` once (or restart Claude Code) so the config reloads.
+
+### What each hook decides
+
 - **Commit hook** — auto-approves a `git commit` only when it references the
   `GRIMOIRE_COMMIT_MSG` file that `commit` writes **and** is not a `--amend`.
   Every other `git commit` — a bare `git commit -m`, an auto-commit from another
@@ -196,39 +218,45 @@ the frictionless flow, add both hooks:
 - **Standup hook** — auto-approves a Bash command only when its **first line** is
   the `# GRIMOIRE_STANDUP` marker that `standup` puts on its read-only scans.
 
-If you already have a `PreToolUse` block matching `Bash`, **merge** these two
-entries into its `hooks` array rather than replacing it. After saving, open
-`/hooks` once (or restart Claude Code) so the config reloads.
+### Security: the markers are forgeable
 
 > [!WARNING]
-> These hooks approve commands by a marker string, which is forgeable — treat
-> them as a convenience you opt into, not a security boundary. Crucially, the
-> marker is forgeable **by Claude itself**: the commit hook trusts the presence
-> of the `GRIMOIRE_COMMIT_MSG` file as proof that you confirmed, but nothing
-> stops an autonomous workflow (a plan executor, a "commit per task" loop, or a
-> reused leftover file) from writing that file and committing without ever
-> asking you. The hook cannot tell a confirmed `/commit` from a forged one. If
-> you rely on reviewing every commit, add a matching rule to your `CLAUDE.md` —
-> "never write `GRIMOIRE_COMMIT_MSG.txt` or run `git commit` outside a `/commit`
-> I confirmed" — because that behavioral instruction is the real control; the
-> hook is only a backstop that also blocks stray commits and all `--amend`
-> history rewrites. The standup hook only matches the `# GRIMOIRE_STANDUP`
-> comment the command emits on a read-only scan. (Manual commits in your own
-> terminal are unaffected — hooks fire only on Claude's tool calls.)
+> **Treat these hooks as a convenience you opt into, not a security boundary.**
+> They approve commands by a marker string, and the marker is forgeable —
+> crucially, forgeable **by Claude itself**.
+>
+> - The commit hook trusts the presence of the `GRIMOIRE_COMMIT_MSG` file as
+>   proof that you confirmed, but nothing stops an autonomous workflow (a plan
+>   executor, a "commit per task" loop, or a reused leftover file) from writing
+>   that file and committing without ever asking you. The hook cannot tell a
+>   confirmed `/commit` from a forged one.
+> - If you rely on reviewing every commit, the real control is the behavioral
+>   rule in your `CLAUDE.md` (see
+>   [Global CLAUDE.md rules](#global-claudemd-rules)). The hook is only a
+>   backstop that blocks stray commits and all `--amend` history rewrites.
+> - The standup hook only matches the `# GRIMOIRE_STANDUP` comment the command
+>   emits on a read-only scan.
+> - Manual commits in your own terminal are unaffected — hooks fire only on
+>   Claude's tool calls.
 
-### Pair the commit hook with a `CLAUDE.md` rule (strongly recommended)
+## Global CLAUDE.md rules
 
-The hook is only a backstop — as the warning notes, Claude can satisfy it by
-writing the `GRIMOIRE_COMMIT_MSG` file and committing on its own. The
-instruction that actually keeps every commit under your review is a behavioral
-rule in your **user-global** `~/.claude/CLAUDE.md`. Keeping it here means it
-travels with grimoire: on a new machine you paste the hook above **and** this
-rule, and you're back in sync. Add these to that file's `## Git` section (create
-the file or section if it doesn't exist yet):
+The commit hook is only a backstop; the instruction that actually keeps every
+commit under your review is a behavioral rule in your **user-global**
+`~/.claude/CLAUDE.md`. Keeping a copy here means it travels with grimoire: on a
+new machine you paste the hook above **and** these rules, and you're back in
+sync.
+
+Create `~/.claude/CLAUDE.md` if it doesn't exist, then merge in the sections you
+want — `## Git` is the half that pairs with the commit hook; `## Code comments`
+and `## graphify` are personal preferences, safe to drop:
 
 ```markdown
+# Global instructions
+
 ## Git
 
+- Never add a `Co-Authored-By: Claude` trailer (or any Claude/Anthropic co-author attribution) to commit messages.
 - **Only ever create a commit through the `/grimoire-core:commit` command, and
   only after I have explicitly confirmed the drafted message in that same
   exchange.** Never run `git commit` (with `-m`, `-F`, or `--amend`) on your own
@@ -241,22 +269,28 @@ the file or section if it doesn't exist yet):
 - Never use `git commit --amend` — it rewrites history and is blocked by the
   commit hook. If a commit genuinely needs amending, tell me and I'll do it
   manually in my own terminal.
+
+## Code comments
+
+- **Prioritize concise over complete.** Comments explain _why_, not _what_ — the
+  code already says what it does. Prefer one short line to a paragraph; prefer no
+  comment to a redundant one.
+- Don't restate the signature, narrate obvious control flow, or add section
+  banners, changelogs, or "added X" notes.
+- Match the surrounding file's comment density and style. Doc comments on
+  exported/public APIs are fine — keep them to the contract (behavior, params,
+  errors), not a tutorial.
+- Reserve longer comments for genuinely non-obvious things: tricky invariants,
+  workarounds with a reason/link, subtle concurrency or ordering constraints.
+
+## graphify
+
+- **graphify** (`~/.claude/skills/graphify/SKILL.md`) - any input to knowledge graph. Trigger: `/graphify`
+  When the user types `/graphify`, use the installed graphify skill or instructions before doing anything else.
 ```
 
 With both halves in the repo, a new machine is fully in sync after just those
 two pastes.
-
-## Agents vs. skills vs. commands
-
-- **Agents** (`agents/`) are _subagents_ — separate personas Claude delegates a
-  task to. Each runs in its own context with a restricted tool set, then returns
-  a result. Good for offloading focused, self-contained work ("review this
-  diff", "size this market").
-- **Skills** (`skills/`) modify how Claude itself responds in the main
-  conversation. `senior-engineer` switches Claude into a terse, technically
-  dense style.
-- **Commands** (`commands/`) are parameterized prompts invoked with a slash.
-  `commit` gathers the git diff and drafts a Conventional Commits message.
 
 ## Repository layout
 
@@ -308,6 +342,7 @@ grimoire/
 │           │       └── class-uml.md
 │           └── senior-engineer/
 │               └── SKILL.md
+├── .markdownlint.yaml               # lint policy for every .md in the repo
 ├── CLAUDE.md                        # authoring guidance for Claude Code
 └── README.md
 ```
@@ -328,3 +363,27 @@ grimoire/
 To add a whole new plugin, create `plugins/<plugin>/` with its own
 `.claude-plugin/plugin.json` and add an entry to `.claude-plugin/marketplace.json`.
 See `CLAUDE.md` for the full authoring conventions.
+
+## Appendix: migrating from the old symlink setup
+
+Earlier versions of grimoire were installed by symlinking (or copying)
+`agents/`, `skills/`, and `commands/` into `~/.claude/`. Those copies will
+**shadow or duplicate** the plugin's components, so remove them after installing
+the plugin:
+
+```sh
+# Inspect what points into this repo first
+ls -la ~/.claude/agents ~/.claude/skills ~/.claude/commands
+
+# Remove the old symlinks / stale copies (review each before deleting):
+rm ~/.claude/skills                       # symlink to grimoire/skills
+rm ~/.claude/agents/agents                # stray symlink to grimoire/agents
+rm ~/.claude/agents/code-reviewer.md \
+   ~/.claude/agents/finance-modeler.md \
+   ~/.claude/agents/researcher.md \
+   ~/.claude/agents/writer.md             # stale copies
+```
+
+After cleanup, the only source of these components is the installed
+`grimoire-core` plugin. Confirm with `/agents` and `/help` that each appears
+exactly once.
