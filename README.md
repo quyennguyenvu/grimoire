@@ -256,7 +256,8 @@ and `## graphify` are personal preferences, safe to drop:
 
 ## Git
 
-- Never add a `Co-Authored-By: Claude` trailer (or any Claude/Anthropic co-author attribution) to commit messages.
+- Never add a `Co-Authored-By: Claude` trailer (or any Claude/Anthropic
+  co-author attribution) to commit messages.
 - **Only ever create a commit through the `/grimoire-core:commit` command, and
   only after I have explicitly confirmed the drafted message in that same
   exchange.** Never run `git commit` (with `-m`, `-F`, or `--amend`) on your own
@@ -266,7 +267,7 @@ and `## graphify` are personal preferences, safe to drop:
   skill or workflow (plan execution, "commit per task", finishing a branch,
   etc.) reaches a commit step, stop and ask me to run `/commit`; do not
   auto-commit to keep the workflow moving.
-- Never use `git commit --amend` — it rewrites history and is blocked by the
+- Never use `git commit --amend` — it rewrites history and is blocked by my
   commit hook. If a commit genuinely needs amending, tell me and I'll do it
   manually in my own terminal.
 
@@ -283,10 +284,32 @@ and `## graphify` are personal preferences, safe to drop:
 - Reserve longer comments for genuinely non-obvious things: tricky invariants,
   workarounds with a reason/link, subtle concurrency or ordering constraints.
 
+## Markdown
+
+- **Any Markdown I ask you to write or edit (`.md`) must pass markdownlint with
+  no warnings.** This applies everywhere — docs, READMEs, plans, ADRs, PR
+  bodies, scratch notes — not just in repos that happen to have a linter wired
+  up. Where a project ships its own config (`.markdownlint*`,
+  `.markdownlint-cli2*`), that config wins over these defaults.
+- Common rules to get right on the first pass: surround headings, lists, tables,
+  and fenced code blocks with blank lines (MD022/MD031/MD032); no blank line
+  between adjacent blockquotes — continue one with a `>`-prefixed line (MD028);
+  specify a language on every fenced block (MD040); one top-level `#` heading
+  and no skipped levels (MD025/MD001); consistent list markers and indentation
+  (MD004/MD005/MD007); single trailing newline and no trailing spaces
+  (MD047/MD009); wrap prose at 80 columns (MD013 — on by default, so hard-wrap
+  unless a project config raises or disables it).
+- Verify before saying you're done: run the repo's lint target if it has one
+  (e.g. `make lint`), otherwise `markdownlint <file>` or
+  `npx markdownlint-cli2 <file>`. If no linter is installed, re-read the file
+  against the rules above instead of assuming it's clean.
+
 ## graphify
 
-- **graphify** (`~/.claude/skills/graphify/SKILL.md`) - any input to knowledge graph. Trigger: `/graphify`
-  When the user types `/graphify`, use the installed graphify skill or instructions before doing anything else.
+- **graphify** (`~/.claude/skills/graphify/SKILL.md`) - any input to knowledge
+  graph. Trigger: `/graphify`
+  When the user types `/graphify`, use the installed graphify skill or
+  instructions before doing anything else.
 ```
 
 With both halves in the repo, a new machine is fully in sync after just those
