@@ -294,11 +294,12 @@ and `## graphify` are personal preferences, safe to drop:
 - Common rules to get right on the first pass: surround headings, lists, tables,
   and fenced code blocks with blank lines (MD022/MD031/MD032); no blank line
   between adjacent blockquotes — continue one with a `>`-prefixed line (MD028);
-  specify a language on every fenced block (MD040); one top-level `#` heading
-  and no skipped levels (MD025/MD001); consistent list markers and indentation
-  (MD004/MD005/MD007); single trailing newline and no trailing spaces
-  (MD047/MD009); wrap prose at 80 columns (MD013 — on by default, so hard-wrap
-  unless a project config raises or disables it).
+  always fence code blocks, never indent them (MD046), and specify a language on
+  every fence (MD040); one top-level `#` heading and no skipped levels
+  (MD025/MD001); consistent list markers and indentation (MD004/MD005/MD007);
+  single trailing newline and no trailing spaces (MD047/MD009); wrap prose at 80
+  columns (MD013 — on by default, so hard-wrap unless a project config raises or
+  disables it).
 - Verify before saying you're done: run the repo's lint target if it has one
   (e.g. `make lint`), otherwise `markdownlint <file>` or
   `npx markdownlint-cli2 <file>`. If no linter is installed, re-read the file
