@@ -2,7 +2,6 @@
 description: Stage changes and create a commit with a Conventional Commits message
 argument-hint: "[optional extra context or instructions]"
 allowed-tools: Bash(git add:*), Bash(git status:*), Bash(git diff:*), Bash(git commit:*), Bash(git log:*)
-model: haiku
 ---
 
 # Commit

@@ -297,9 +297,8 @@ and `## graphify` are personal preferences, safe to drop:
   always fence code blocks, never indent them (MD046), and specify a language on
   every fence (MD040); one top-level `#` heading and no skipped levels
   (MD025/MD001); consistent list markers and indentation (MD004/MD005/MD007);
-  single trailing newline and no trailing spaces (MD047/MD009); wrap prose at 80
-  columns (MD013 — on by default, so hard-wrap unless a project config raises or
-  disables it).
+  single trailing newline and no trailing spaces (MD047/MD009).
+- **Never hard-wrap prose in any markdown file, anywhere — one line per paragraph or bullet, however long.** MD013/line-length is on by default in the markdownlint CLI (though off in the VS Code extension), so in repos without a markdownlint config, add `.markdownlint.json` with `{"MD013": false}` at the root; for standalone files outside a repo, disregard MD013 findings. If a project's own config deliberately enforces MD013, flag the conflict to me instead of wrapping.
 - Verify before saying you're done: run the repo's lint target if it has one
   (e.g. `make lint`), otherwise `markdownlint <file>` or
   `npx markdownlint-cli2 <file>`. If no linter is installed, re-read the file
