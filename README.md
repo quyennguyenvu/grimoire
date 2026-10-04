@@ -304,6 +304,13 @@ and `## graphify` are personal preferences, safe to drop:
   `npx markdownlint-cli2 <file>`. If no linter is installed, re-read the file
   against the rules above instead of assuming it's clean.
 
+## Machine resources
+
+- My MacBook has 16 GB RAM and 8 cores. Heavy toolchain commands (full test suites, `golangci-lint`, `go build`/`go vet` of fresh module trees, bundlers, Docker builds) each take 1 GB or more, and running several concurrently has swapped the machine to a freeze. Run them one at a time from the main thread: never inside parallel subagents, and never start one while another is still running in the background.
+- For review or analysis fan-out, use read-only agents (Read/Grep/Glob only). At most one agent at a time may run builds, tests, or linters.
+- Prefer the project's fast test target for feedback; run full matrices alone with explicit `-parallel` and `-timeout` limits.
+- Never delete my caches (`go clean -cache`, the Go module cache, npm/pnpm stores) to get a cold measurement; ask first.
+
 ## graphify
 
 - **graphify** (`~/.claude/skills/graphify/SKILL.md`) - any input to knowledge
