@@ -1,0 +1,8 @@
+{
+  "name": "grimoire",
+  "version": "0.4.0",
+  "description": "A spellbook of opinionated Claude Code personas and utilities: warden (code review) and illusionist (decks and visual reports) subagents; sage (terse senior-engineer mode), go-runes (Go conventions), codex-rest and codex-grpc (API specs), glyph (architecture diagrams), and edict (decision records) skills; and seal (Conventional Commits) and recall (standup log) slash commands.",
+  "author": {
+    "name": "quyennguyenvu"
+  }
+}

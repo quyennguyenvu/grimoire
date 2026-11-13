@@ -6,8 +6,8 @@
   },
   "plugins": [
     {
-      "name": "grimoire-core",
-      "source": "./plugins/grimoire-core"
+      "name": "grimoire",
+      "source": "./plugins/grimoire"
     }
   ]
 }
