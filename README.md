@@ -246,6 +246,10 @@ Create `~/.claude/CLAUDE.md` if it doesn't exist, then merge in the sections you
 - Reserve longer comments for genuinely non-obvious things: tricky invariants,
   workarounds with a reason/link, subtle concurrency or ordering constraints.
 
+## Tests
+
+- Never delete, skip, or weaken an existing test case to make a change pass. Remove a test only when the business logic it covers has been deliberately removed or changed, and say which requirement made it obsolete. If a test blocks the work and you can't point to that requirement, stop and ask me.
+
 ## Markdown
 
 - **Any Markdown I ask you to write or edit (`.md`) must pass markdownlint with
