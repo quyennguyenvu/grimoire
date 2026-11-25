@@ -11,7 +11,7 @@ allowed-tools: Bash(git add:*), Bash(git status:*), Bash(git diff:*), Bash(git c
 - Status: !`git status --short`
 - Staged diff: !`git diff --staged`
 - Unstaged diff: !`git diff`
-- Recent messages (for style): !`git log --oneline -10`
+- Recent messages (for style): !`git log --oneline -10 --ignore-missing HEAD`
 
 ## Task
 
