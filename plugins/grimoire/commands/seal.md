@@ -8,15 +8,16 @@ allowed-tools: Bash(git add:*), Bash(git status:*), Bash(git diff:*), Bash(git c
 
 ## Context
 
-- Status: !`git status --short`
-- Staged diff: !`git diff --staged`
-- Unstaged diff: !`git diff`
-- Recent messages (for style): !`git log --oneline -10 --ignore-missing HEAD`
+- Status: !`git status --short || true`
+- Staged diff: !`git diff --staged 2>/dev/null || true`
+- Unstaged diff: !`git diff 2>/dev/null || true`
+- Recent messages (for style): !`git log --oneline -10 --ignore-missing HEAD || true`
 
 ## Task
 
 Write a commit for the changes above following Conventional Commits (`type(scope): subject`, imperative, subject under 72 chars). Keep the message straightforward and precise — plain wording, no filler or hedging.
 
+- If Status reads `not a git repository`, the shell has drifted out of the repo: run `cd "${CLAUDE_PROJECT_DIR}"` as its own Bash call (chaining `cd` with `git` raises a permission prompt), then re-run the four Context commands there and work from that output.
 - Infer `type` (feat/fix/refactor/chore/test/docs) and `scope` from the diff.
 - Base the message strictly on the diffs shown above. Describe the change itself — don't research or explain what a changed dependency/library does internally, and don't speculate beyond the diff. Keep it concise to save tokens.
 - If nothing is staged, stage the relevant files first; don't stage unrelated noise.
